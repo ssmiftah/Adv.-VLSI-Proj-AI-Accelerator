@@ -219,6 +219,8 @@ phases, see [docs/project_summary.md](docs/project_summary.md).
 | Strength reduction    | TRUNC, BAM, Mitchell variants — the multiplier replaced with cheaper operators |
 | Algo / arch co-design | Tile sizes vs multiplier-variant sweep; DSP-budget cliff at S=16 |
 
-## License
+## Disclosure
 
-Course project; no license declared. Ask before reuse.
+This Project was built using the help of Claude Code.
+
+
