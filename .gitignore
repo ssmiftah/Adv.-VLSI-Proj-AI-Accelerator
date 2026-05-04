@@ -1,0 +1,41 @@
+# Vivado
+*.jou
+*.log
+*.str
+*.pb
+*.wdb
+*.wcfg
+.Xil/
+vivado*.backup.*
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+*.srcs/
+*.gen/
+*.xpr.backup*
+
+# Simulation
+work/
+csrc/
+*.vcd
+*.fst
+*.ghw
+ucli.key
+xsim.dir/
+*.vstf
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Build outputs
+build/
+out/
+*.bit
+*.bin
+*.mcs

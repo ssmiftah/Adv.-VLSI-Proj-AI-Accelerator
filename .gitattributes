@@ -1,0 +1,26 @@
+* text=auto eol=lf
+
+*.sv   text eol=lf
+*.svh  text eol=lf
+*.v    text eol=lf
+*.vh   text eol=lf
+*.xdc  text eol=lf
+*.tcl  text eol=lf
+*.f    text eol=lf
+*.do   text eol=lf
+*.cfg  text eol=lf
+*.md   text eol=lf
+*.txt  text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.py   text eol=lf
+*.sh   text eol=lf
+Makefile text eol=lf
+
+*.png  binary
+*.jpg  binary
+*.pdf  binary
+*.bit  binary
+*.mcs  binary
+*.dcp  binary
