@@ -189,20 +189,43 @@ verilator --binary --top-module tb_systolic_array \
 ./obj_dir/tb_systolic_array/Vtb_systolic_array
 ```
 
-## Documentation index
+# Vivado synth comparison
 
-The work was structured into seven phases. Each has a design-decisions
-doc (locked before code) and a results doc (after verification):
+| Run | Fmax (MHz) | Slack (ns) | Period (ns) | LUTs | FFs | DSPs | BRAMs | Levels | Power (W) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| S8 | 140.1 | 2.863 | 7.137 | 2561 | 3271 | 128 | 0 | 3 | 0.270 |
+| S8_BAM_B2 | 112.4 | 1.105 | 8.895 | 5873 | 2663 | 0 | 0 | 14 | 0.172 |
+| S8_BAM_B4 | 132.2 | 2.437 | 7.563 | 4390 | 2119 | 0 | 0 | 10 | 0.143 |
+| S8_DSP | 128.7 | 2.229 | 7.771 | 2049 | 3207 | 64 | 0 | 2 | 0.212 |
+| S8_LUT | 103.6 | 0.344 | 9.656 | 7937 | 3207 | 0 | 0 | 15 | 0.207 |
+| S8_MITCHELL | 74.7 | -3.393 | 13.393 | 12493 | 3207 | 0 | 0 | 21 | 0.318 |
+| S8_TRUNC_L2 | 103.0 | 0.292 | 9.708 | 7689 | 3079 | 0 | 0 | 13 | 0.204 |
+| S8_TRUNC_L4 | 103.5 | 0.335 | 9.665 | 7441 | 2951 | 0 | 0 | 14 | 0.202 |
+| acc_S16_BAM_B2 | 106.6 | 0.619 | 9.381 | 23836 | 10524 | 0 | 11 | 13 | 0.512 |
+| acc_S16_DSP |  |  |  |  |  |  |  |  |  |
+| acc_S4_BAM_B2 | 109.3 | 0.848 | 9.152 | 1629 | 752 | 0 | 6 | 9 | 0.141 |
+| acc_S4_DSP | 104.9 | 0.466 | 9.534 | 689 | 892 | 16 | 6 | 9 | 0.150 |
+| acc_S8_BAM_B2 | 101.3 | 0.132 | 9.868 | 6124 | 2731 | 0 | 6 | 1 | 0.215 |
+| acc_S8_DSP | 106.3 | 0.592 | 9.408 | 2282 | 3277 | 64 | 6 | 1 | 0.244 |
 
-| Phase | Topic                          | Docs |
-|-------|--------------------------------|------|
-| 0     | Foundations / hand-trace       | [phase0/](docs/phase0/) |
-| 1     | Single PE                      | [phase1/](docs/phase1/) |
-| 2     | Systolic array                 | [phase2/](docs/phase2/) |
-| 3     | Retiming & Fmax                | [phase3/](docs/phase3/) |
-| 4     | Strength reduction             | [phase4/](docs/phase4/) |
-| 5     | Tiling + algo/arch co-design   | [phase5/](docs/phase5/) |
-| 6A    | Layer-level demo               | [phase6/](docs/phase6/) |
+## Critical paths
+
+| Run | Source | Destination |
+|---|---|---|
+| S8 | `gen_row[4].gen_col[6].u_pe/mul_reg0/CLK` | `gen_row[4].gen_col[6].u_pe/c_reg_reg[18]/D` |
+| S8_BAM_B2 | `gen_row[0].gen_col[5].u_pe/b_reg_reg[3]/C` | `gen_row[0].gen_col[5].u_pe/gen_bam.c_reg_reg[31]/D` |
+| S8_BAM_B4 | `gen_row[7].gen_col[4].u_pe/a_reg_reg[5]/C` | `gen_row[7].gen_col[4].u_pe/gen_bam.c_reg_reg[30]/D` |
+| S8_DSP | `gen_row[3].gen_col[7].u_pe/a_reg_reg[7]/C` | `gen_row[3].gen_col[7].u_pe/gen_dsp.c_reg_reg[19]/D` |
+| S8_LUT | `gen_row[0].gen_col[5].u_pe/a_reg_reg[2]/C` | `gen_row[0].gen_col[5].u_pe/gen_lut.c_reg_reg[30]/D` |
+| S8_MITCHELL | `gen_row[7].gen_col[7].u_pe/a_reg_reg[1]/C` | `gen_row[7].gen_col[7].u_pe/gen_mitchell.c_reg_reg[27]/D` |
+| S8_TRUNC_L2 | `gen_row[0].gen_col[6].u_pe/a_reg_reg[3]/C` | `gen_row[0].gen_col[6].u_pe/gen_trunc.c_reg_reg[24]/D` |
+| S8_TRUNC_L4 | `gen_row[0].gen_col[6].u_pe/a_reg_reg[2]/C` | `gen_row[0].gen_col[6].u_pe/gen_trunc.c_reg_reg[28]/D` |
+| acc_S16_BAM_B2 | `u_array/gen_row[0].gen_col[4].u_pe/b_reg_reg[2]/C` | `u_array/gen_row[0].gen_col[4].u_pe/gen_bam.c_reg_reg[29]/D` |
+| acc_S16_DSP | `` | `` |
+| acc_S4_BAM_B2 | `u_ctrl/M_reg_reg[0]/C` | `u_a_bram/mem_reg/ADDRBWRADDR[14]` |
+| acc_S4_DSP | `u_ctrl/N_reg_reg[0]/C` | `u_c_bram/mem_reg_0/ADDRARDADDR[14]` |
+| acc_S8_BAM_B2 | `u_ctrl/FSM_onehot_state_reg[4]/C` | `u_array/gen_row[3].gen_col[3].u_pe/gen_bam.c_reg_reg[8]/D` |
+| acc_S8_DSP | `u_ctrl/FSM_onehot_state_reg[4]/C` | `u_array/gen_row[4].gen_col[0].u_pe/gen_dsp.c_reg_reg[30]/D` |
 
 The umbrella plan with the full status table is at
 [docs/00_project_plan.md](docs/00_project_plan.md). For a narrative
